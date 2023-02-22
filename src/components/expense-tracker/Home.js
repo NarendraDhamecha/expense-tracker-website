@@ -40,8 +40,8 @@ const Home = () => {
         verify email
       </button>
       <span>
-        Your profile is incomplete.{" "}
-        <NavLink to="/completeprofile">Complete now</NavLink>
+        Your profile is incomplete.
+        <NavLink to="/profile">Complete now</NavLink>
       </span>
     </div>
   );

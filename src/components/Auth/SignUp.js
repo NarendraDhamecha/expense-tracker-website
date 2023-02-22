@@ -1,19 +1,10 @@
 import { useRef } from "react";
-import {
-  Button,
-  Card,
-  Container,
-  Form,
-  FormControl,
-  FormGroup,
-} from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import classes from "./SignUp.module.css";
 
 const SignUp = () => {
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
-  const confirmPasswordRef = useRef("");
+  const emailRef = useRef('');
+  const passwordRef = useRef('');
+  const confirmPasswordRef = useRef('');
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -23,9 +14,9 @@ const SignUp = () => {
     const confirmPassword = confirmPasswordRef.current.value;
 
     if (
-      email.length == 0 ||
-      password.length == 0 ||
-      confirmPassword.length == 0
+      email.length === 0 ||
+      password.length === 0 ||
+      confirmPassword.length === 0
     ) {
       alert("please fill all fields");
       return;
@@ -62,52 +53,61 @@ const SignUp = () => {
       const data = await res.json();
 
       if (res.ok) {
-        console.log('User has successfully signed up.')
-      }else{
-        throw new Error(data.error.message)
+        console.log("User has successfully signed up.");
+      } else {
+        throw new Error(data.error.message);
       }
     } catch (e) {
-        alert(e);
+      alert(e);
     }
   };
 
   return (
-    <Container className={classes.main}>
-      <Card className={classes.signUp}>
-        <Card.Body>
-          <Card.Title>
-            <h2>Sign Up</h2>
-          </Card.Title>
-          <Form onSubmit={onSubmitHandler}>
-            <FormGroup>
-              <FormControl ref={emailRef} type="email" placeholder="Email" />
-            </FormGroup>
-            <FormGroup>
-              <FormControl
-                ref={passwordRef}
-                type="password"
-                placeholder="Password"
-              />
-            </FormGroup>
-            <FormGroup>
-              <FormControl
-                ref={confirmPasswordRef}
-                type="password"
-                placeholder="Confirm password"
-              />
-            </FormGroup>
-            <Button type="submit" variant="outline-primary">
-              Sign Up
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <Card className={classes.logIn}>
-        <Card.Body>
-          <Card.Text>Have an account? <NavLink to='/login'>Log In</NavLink></Card.Text>
-        </Card.Body>
-      </Card>
-    </Container>
+    <div className="container-fluid text-center">
+      <div className="row">
+        <div className="col-md-5 col-10 mx-auto">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title mb-5">
+                <h3>SIGN UP</h3>
+              </div>
+              <form onSubmit={onSubmitHandler}>
+                <div className="mb-2">
+                  <label className="form-label">Email address</label>
+                  <input ref={emailRef} className="form-control" type="email" />
+                </div>
+                <div className="mb-2">
+                  <label className="form-label">Password</label>
+                  <input
+                    ref={passwordRef}
+                    className="form-control"
+                    type="password"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="form-label">Confirm password</label>
+                  <input
+                    className="form-control"
+                    type="password"
+                    ref={confirmPasswordRef}
+                  />
+                </div>
+                <button className="btn btn-primary" type="submit">
+                  Sign Up
+                </button>
+              </form>
+            </div>
+          </div>
+          <div className="card mt-3">
+            <div className="card-body">
+              <div className="card-text">
+                Have an account? <NavLink to="/login">Log In</NavLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

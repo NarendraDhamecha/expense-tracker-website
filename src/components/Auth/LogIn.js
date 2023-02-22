@@ -1,21 +1,13 @@
 import { useContext, useRef } from "react";
-import {
-  Button,
-  Card,
-  Container,
-  Form,
-  FormControl,
-  FormGroup,
-} from "react-bootstrap";
-import { NavLink, useHistory } from "react-router-dom";
+import { useHistory, NavLink } from "react-router-dom";
 import AuthContex from "../contex/AuthContex";
-import classes from "./LogIn.module.css";
 
 const LogIn = () => {
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
+  const emailRef = useRef('');
+  const passwordRef = useRef('');
   const authCtx = useContext(AuthContex);
   const history = useHistory();
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -23,7 +15,7 @@ const LogIn = () => {
     const email = emailRef.current.value;
     const password = passwordRef.current.value;
 
-    if (email.length == 0 || password.length == 0) {
+    if (email.length === 0 || password.length === 0) {
       alert("please fill all fields");
       return;
     }
@@ -50,10 +42,10 @@ const LogIn = () => {
       );
 
       const data = await res.json();
-      if(res.ok){
-        authCtx.login(data.idToken, data.email)
-        history.push('/home')
-      }else{
+      if (res.ok) {
+        authCtx.login(data.idToken, data.email);
+        history.push("/home");
+      } else {
         throw new Error(data.error.message);
       }
     } catch (e) {
@@ -62,37 +54,43 @@ const LogIn = () => {
   };
 
   return (
-    <Container className={classes.main}>
-      <Card className={classes.logIn}>
-        <Card.Body>
-          <Card.Title>
-            <h2>Log In</h2>
-          </Card.Title>
-          <Form onSubmit={onSubmitHandler}>
-            <FormGroup>
-              <FormControl ref={emailRef} type="email" placeholder="Email" />
-            </FormGroup>
-            <FormGroup>
-              <FormControl
-                ref={passwordRef}
-                type="password"
-                placeholder="Password"
-              />
-            </FormGroup>
-            <Button type="submit" variant="outline-primary">
-              Log In
-            </Button>
-          </Form>
-        </Card.Body>
-      </Card>
-      <Card className={classes.signUp}>
-        <Card.Body>
-          <Card.Text>
-            Don't have an account? <NavLink to="/">Sign Up</NavLink>
-          </Card.Text>
-        </Card.Body>
-      </Card>
-    </Container>
+    <div className="container-fluid text-center">
+      <div className="row">
+        <div className="col-md-5 col-10 mx-auto">
+          <div className="card">
+            <div className="card-body">
+              <div className="card-title mb-5">
+                <h3>LOG IN</h3>
+              </div>
+              <form onSubmit={onSubmitHandler}>
+                <div className="mb-2">
+                  <label className="form-label">Email address</label>
+                  <input ref={emailRef} className="form-control" type="email" />
+                </div>
+                <div className="mb-2">
+                  <label className="form-label">Password</label>
+                  <input
+                    ref={passwordRef}
+                    className="form-control"
+                    type="password"
+                  />
+                </div>
+                <button className="btn btn-primary" type="submit">
+                  Log In
+                </button>
+              </form>
+            </div>
+          </div>
+          <div className="card mt-3">
+            <div className="card-body">
+              <div className="card-text">
+              Don't have an account? <NavLink to="/signup">Sign Up</NavLink>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

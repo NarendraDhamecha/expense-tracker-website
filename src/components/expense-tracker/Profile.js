@@ -1,6 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
-import classes from "./Profile.module.css";
 import AuthContex from "../contex/AuthContex";
 
 const Profile = () => {
@@ -26,7 +24,7 @@ const Profile = () => {
         setName(data.users[0].displayName);
         setUrl(data.users[0].photoUrl);
       });
-  }, []);
+  }, [authCtx.token]);
 
   const fullNameHandler = (e) => {
     setName(e.target.value);
@@ -39,7 +37,7 @@ const Profile = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    if (name.length == 0 || url.length == 0) {
+    if (name.length === 0 || url.length === 0) {
       alert("please fill all fields");
       return;
     }
@@ -73,39 +71,43 @@ const Profile = () => {
   };
 
   return (
-    <Container>
-      <div className={`card ${classes.profile}`}>
-        <div className="card-body">
-          <h5 className="card-title">Contact Details</h5>
-          <form onSubmit={onSubmitHandler}>
-            <div className="form-group">
-              <label>Full Name</label>
-              <input
-                onChange={fullNameHandler}
-                value={name}
-                type="text"
-                className="form-control"
-              />
+    <div className="container-fluid text-center">
+      <div className="row">
+        <div className="col-md-5 col-10 mx-auto">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title mb-4">Contact Details</h5>
+              <form onSubmit={onSubmitHandler}>
+                <div className="mb-3">
+                  <label className="form-label">Full Name</label>
+                  <input
+                    onChange={fullNameHandler}
+                    value={name}
+                    type="text"
+                    className="form-control"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="form-label">Profile Photo URL</label>
+                  <input
+                    onChange={imageUrlHandler}
+                    value={url}
+                    type="url"
+                    className="form-control"
+                  />
+                </div>
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+                <button type="submit" className="btn btn-danger ms-4">
+                  Cancel
+                </button>
+              </form>
             </div>
-            <div className="form-group">
-              <label>Profile Photo URL</label>
-              <input
-                onChange={imageUrlHandler}
-                value={url}
-                type="url"
-                className="form-control"
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              Update
-            </button>
-            <button type="submit" className="btn btn-danger">
-              Cancel
-            </button>
-          </form>
+          </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
