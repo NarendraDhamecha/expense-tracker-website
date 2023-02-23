@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { Route, Switch } from "react-router-dom";
+import ForgetPassword from "./components/Auth/ForgetPassword";
 import LogIn from "./components/Auth/LogIn";
 import SignUp from "./components/Auth/SignUp";
 import AuthContex from "./components/contex/AuthContex";
@@ -18,6 +19,7 @@ const App = () => {
       <Route path="/login" component={LogIn}/>
       <Route path='/home' component={Home}/>
       <Route path='/profile' component={Profile}/>
+      <Route path="/forgetpassword" component={ForgetPassword}/>
     </Switch>
     </>
   );

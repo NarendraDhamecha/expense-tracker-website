@@ -3,11 +3,10 @@ import { useHistory, NavLink } from "react-router-dom";
 import AuthContex from "../contex/AuthContex";
 
 const LogIn = () => {
-  const emailRef = useRef('');
-  const passwordRef = useRef('');
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
   const authCtx = useContext(AuthContex);
   const history = useHistory();
-
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -53,6 +52,10 @@ const LogIn = () => {
     }
   };
 
+  const forgetPasswordHandler = () => {
+     history.push('/forgetpassword')
+  };
+
   return (
     <div className="container-fluid text-center">
       <div className="row">
@@ -79,12 +82,20 @@ const LogIn = () => {
                   Log In
                 </button>
               </form>
+              <div>
+                <button
+                  onClick={forgetPasswordHandler}
+                  className="btn btn-danger mt-2"
+                >
+                  Forget password?
+                </button>
+              </div>
             </div>
           </div>
           <div className="card mt-3">
             <div className="card-body">
               <div className="card-text">
-              Don't have an account? <NavLink to="/signup">Sign Up</NavLink>
+                Don't have an account? <NavLink to="/signup">Sign Up</NavLink>
               </div>
             </div>
           </div>
