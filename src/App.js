@@ -1,15 +1,15 @@
-import { useContext } from "react";
+// import { useContext } from "react";
 import { Route, Switch } from "react-router-dom";
 import ForgetPassword from "./components/Auth/ForgetPassword";
 import LogIn from "./components/Auth/LogIn";
 import SignUp from "./components/Auth/SignUp";
-import AuthContex from "./components/contex/AuthContex";
+// import AuthContex from "./components/contex/AuthContex";
 import Home from "./components/expense-tracker/Home";
 import Profile from "./components/expense-tracker/Profile";
 import Navbar from "./components/Layout/Navbar";
 
 const App = () => {
-  const authCtx = useContext(AuthContex);
+  // const authCtx = useContext(AuthContex);
 
   return (
     <>
