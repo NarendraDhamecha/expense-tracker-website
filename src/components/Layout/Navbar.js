@@ -39,6 +39,9 @@ const Navbar = () => {
             {!authCtx.isLoggedIn && <li className="nav-item">
               <NavLink className="nav-link" to="/login">LOG IN</NavLink>
             </li>}
+            {!authCtx.isLoggedIn && <li className="nav-item">
+              <NavLink className="nav-link" to="/">SIGN UP</NavLink>
+            </li>}
             {authCtx.isLoggedIn && <li className="nav-item">
               <button onClick={onLogOut} className="btn btn-primary btn-sm mt-1 ms-1">Log Out</button>
             </li>}
