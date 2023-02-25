@@ -4,6 +4,8 @@ import classes from "./Home.module.css";
 import AuthContex from "../contex/AuthContex";
 import Expenses from "./Expenses";
 
+let existingId = null;
+
 const Home = () => {
   const [expenses, setExpenses] = useState([]);
   const authCtx = useContext(AuthContex);
@@ -19,11 +21,14 @@ const Home = () => {
       .then((data) => {
         const items = [];
         for (let i in data) {
-          items.push(data[i]);
+          items.push({
+            id: i,
+            ...data[i],
+          });
         }
         setExpenses(items);
       });
-  }, []);
+  }, [authCtx.email]);
 
   const verifyEmailHandler = async () => {
     try {
@@ -55,36 +60,87 @@ const Home = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    const userExpense = {
-      amount: amountRef.current.value,
-      description: descriptionRef.current.value,
-      catagory: catagoryRef.current.value,
-    };
+    let url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}.json`;
+    let method = "POST";
+
+    if (existingId) {
+      url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}/${existingId}.json`;
+      method = "PUT";
+    }
+
+    // const userExpense = {
+    //   amount: amountRef.current.value,
+    //   description: descriptionRef.current.value,
+    //   catagory: catagoryRef.current.value,
+    // };
 
     try {
-      const res = await fetch(
-        `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}.json`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            amount: amountRef.current.value,
-            description: descriptionRef.current.value,
-            catagory: catagoryRef.current.value,
-          }),
-        }
-      );
+      const res = await fetch(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: method,
+        body: JSON.stringify({
+          amount: amountRef.current.value,
+          description: descriptionRef.current.value,
+          catagory: catagoryRef.current.value,
+        }),
+      });
       const data = await res.json();
       if (res.ok) {
+        let id = data.name
+        if(existingId){
+          id = existingId;
+        }
+        const userExpense = {
+          id: id,
+          amount: amountRef.current.value,
+          description: descriptionRef.current.value,
+          catagory: catagoryRef.current.value,
+        };
         setExpenses((prevItems) => [...prevItems, userExpense]);
+        existingId = null;
       } else {
         throw new Error(data.error.message);
       }
     } catch (e) {
       alert(e);
     }
+    document.getElementById("amount").value = "";
+    document.getElementById("des").value = "";
+    document.getElementById("cat").value = "";
+  };
+
+  const deleteExpense = async (id) => {
+    const res = await fetch(
+      `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}/${id}.json`,
+      {
+        method: "DELETE",
+      }
+    );
+    if (res.ok) {
+      setExpenses((prevItems) => {
+        const filteredList = prevItems.filter((prevItem) => {
+          return prevItem.id !== id;
+        });
+        return filteredList;
+      });
+      console.log("Expense successfully deleted");
+    }
+  };
+
+  const editExpense = (expense) => {
+    document.getElementById("amount").value = expense.amount;
+    document.getElementById("des").value = expense.description;
+    document.getElementById("cat").value = expense.catagory;
+    existingId = expense.id;
+
+    setExpenses((prevItems) => {
+      const filteredList = prevItems.filter((prevItem) => {
+        return prevItem.id !== expense.id;
+      });
+      return filteredList;
+    });
   };
 
   return (
@@ -109,6 +165,7 @@ const Home = () => {
                   <div className="mb-3">
                     <label className="form-label">Amount</label>
                     <input
+                      id="amount"
                       ref={amountRef}
                       className="form-control"
                       type="number"
@@ -117,6 +174,7 @@ const Home = () => {
                   <div className="mb-3">
                     <label className="form-label">Description</label>
                     <input
+                      id="des"
                       ref={descriptionRef}
                       className="form-control"
                       type="text"
@@ -124,7 +182,7 @@ const Home = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Choose a catagory:</label>
-                    <select ref={catagoryRef} className="form-select">
+                    <select id="cat" ref={catagoryRef} className="form-select">
                       <option value="Food">Food</option>
                       <option value="Petrol">Petrol</option>
                       <option value="Travel">Travel</option>
@@ -142,7 +200,11 @@ const Home = () => {
                 </form>
               </div>
             </div>
-            <Expenses expenses={expenses} />
+            <Expenses
+              expenses={expenses}
+              onDelete={deleteExpense}
+              onEdit={editExpense}
+            />
           </div>
         </div>
       </div>
