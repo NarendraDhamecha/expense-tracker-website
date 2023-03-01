@@ -1,12 +1,14 @@
-import { useContext, useRef } from "react";
+import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import { AuthActions } from "../../redux-store/AuthSlice";
 import { useHistory, NavLink } from "react-router-dom";
-import AuthContex from "../contex/AuthContex";
 
 const LogIn = () => {
   const emailRef = useRef("");
   const passwordRef = useRef("");
-  const authCtx = useContext(AuthContex);
   const history = useHistory();
+  const dispatch = useDispatch();
+
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -42,8 +44,8 @@ const LogIn = () => {
 
       const data = await res.json();
       if (res.ok) {
-        authCtx.login(data.idToken, data.email);
-        history.push("/home");
+        dispatch(AuthActions.login({token: data.idToken, email: data.email}));
+        history.push('/home');
       } else {
         throw new Error(data.error.message);
       }

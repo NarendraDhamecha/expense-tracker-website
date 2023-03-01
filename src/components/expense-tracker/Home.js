@@ -1,21 +1,23 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import classes from "./Home.module.css";
-import AuthContex from "../contex/AuthContex";
+import { useSelector, useDispatch } from "react-redux";
 import Expenses from "./Expenses";
+import { ExpenseAction } from "../../redux-store/ExpenseSlice";
 
 let existingId = null;
 
 const Home = () => {
-  const [expenses, setExpenses] = useState([]);
-  const authCtx = useContext(AuthContex);
+  const dispatch = useDispatch();
+  const email = useSelector((state) => state.auth.email);
+  const expenses = useSelector((state) => state.expenses.expenses);
   const amountRef = useRef("");
   const descriptionRef = useRef("");
   const catagoryRef = useRef("");
 
   useEffect(() => {
     fetch(
-      `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}.json`
+      `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${email}.json`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -26,53 +28,21 @@ const Home = () => {
             ...data[i],
           });
         }
-        setExpenses(items);
+        dispatch(ExpenseAction.addExpense(items));
       });
-  }, [authCtx.email]);
+  }, [email]);
 
-  const verifyEmailHandler = async () => {
-    try {
-      const res = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBMCRv6A2RlE36nAMBYrfJ-3aBiPdMCfZE",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            requestType: "VERIFY_EMAIL",
-            idToken: authCtx.token,
-          }),
-        }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (e) {
-      alert(e);
-    }
-  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    let url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}.json`;
+    let url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${email}.json`;
     let method = "POST";
 
     if (existingId) {
-      url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}/${existingId}.json`;
+      url = `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${email}/${existingId}.json`;
       method = "PUT";
     }
-
-    // const userExpense = {
-    //   amount: amountRef.current.value,
-    //   description: descriptionRef.current.value,
-    //   catagory: catagoryRef.current.value,
-    // };
 
     try {
       const res = await fetch(url, {
@@ -88,8 +58,8 @@ const Home = () => {
       });
       const data = await res.json();
       if (res.ok) {
-        let id = data.name
-        if(existingId){
+        let id = data.name;
+        if (existingId) {
           id = existingId;
         }
         const userExpense = {
@@ -98,7 +68,8 @@ const Home = () => {
           description: descriptionRef.current.value,
           catagory: catagoryRef.current.value,
         };
-        setExpenses((prevItems) => [...prevItems, userExpense]);
+        
+        dispatch(ExpenseAction.addExpense([...expenses, userExpense]));
         existingId = null;
       } else {
         throw new Error(data.error.message);
@@ -106,25 +77,22 @@ const Home = () => {
     } catch (e) {
       alert(e);
     }
-    document.getElementById("amount").value = "";
-    document.getElementById("des").value = "";
-    document.getElementById("cat").value = "";
   };
 
   const deleteExpense = async (id) => {
     const res = await fetch(
-      `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${authCtx.email}/${id}.json`,
+      `https://expense-tracker-a7105-default-rtdb.firebaseio.com/expenses/${email}/${id}.json`,
       {
         method: "DELETE",
       }
     );
     if (res.ok) {
-      setExpenses((prevItems) => {
-        const filteredList = prevItems.filter((prevItem) => {
-          return prevItem.id !== id;
-        });
-        return filteredList;
+      const filteredList = expenses.filter((prevItem) => {
+        return prevItem.id !== id;
       });
+
+      dispatch(ExpenseAction.addExpense(filteredList));
+
       console.log("Expense successfully deleted");
     }
   };
@@ -135,27 +103,26 @@ const Home = () => {
     document.getElementById("cat").value = expense.catagory;
     existingId = expense.id;
 
-    setExpenses((prevItems) => {
-      const filteredList = prevItems.filter((prevItem) => {
-        return prevItem.id !== expense.id;
-      });
-      return filteredList;
+    const filteredList = expenses.filter((prevItem) => {
+      return prevItem.id !== expense.id;
     });
+    dispatch(ExpenseAction.addExpense(filteredList));
   };
 
   return (
     <>
-      <div className={classes.home}>
-        <h6>Welcome to expense tracker</h6>
-        <button onClick={verifyEmailHandler} className="btn btn-primary mb-2">
-          verify email
-        </button>
-        <span>
-          Your profile is incomplete.
-          <NavLink to="/profile">Complete now</NavLink>
-        </span>
-      </div>
-      <div className="container-fluid text-center mt-4">
+      <header className="text-center">
+        <h4>Welcome to expense tracker</h4>
+      </header>
+      <div className="d-flex justify-content-center my-4">
+          <span className={classes.home}>
+            Your profile is incomplete.
+            <NavLink Link to="/profile">
+              Complete now
+            </NavLink>
+          </span>
+        </div>
+      <div className="container-fluid text-center">
         <div className="row">
           <div className="col-md-8 col-10 mx-auto">
             <div className="card">

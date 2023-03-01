@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react";
-import AuthContex from "../contex/AuthContex";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
-  const authCtx = useContext(AuthContex);
+  const token = useSelector(state => state.auth.token);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
 
@@ -15,7 +15,7 @@ const Profile = () => {
         },
         method: "POST",
         body: JSON.stringify({
-          idToken: authCtx.token,
+          idToken: token,
         }),
       }
     )
@@ -24,7 +24,7 @@ const Profile = () => {
         setName(data.users[0].displayName);
         setUrl(data.users[0].photoUrl);
       });
-  }, [authCtx.token]);
+  }, [token]);
 
   const fullNameHandler = (e) => {
     setName(e.target.value);
@@ -48,7 +48,7 @@ const Profile = () => {
         {
           method: "POST",
           body: JSON.stringify({
-            idToken: authCtx.token,
+            idToken: token,
             displayName: name,
             photoUrl: url,
             returnSecureToken: true,
