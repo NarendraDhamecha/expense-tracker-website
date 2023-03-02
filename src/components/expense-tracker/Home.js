@@ -9,6 +9,7 @@ let existingId = null;
 
 const Home = () => {
   const dispatch = useDispatch();
+  const darkMode = useSelector(state => state.theme.darkMode)
   const email = useSelector((state) => state.auth.email);
   const expenses = useSelector((state) => state.expenses.expenses);
   const amountRef = useRef("");
@@ -112,7 +113,7 @@ const Home = () => {
   return (
     <>
       <header className="text-center">
-        <h4>Welcome to expense tracker</h4>
+        <h4 className={`${darkMode? classes.header: ""}`}>Welcome to expense tracker</h4>
       </header>
       <div className="d-flex justify-content-center my-4">
           <span className={classes.home}>

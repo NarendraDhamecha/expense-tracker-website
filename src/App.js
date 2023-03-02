@@ -5,12 +5,24 @@ import SignUp from "./components/Auth/SignUp";
 import Home from "./components/expense-tracker/Home";
 import Profile from "./components/expense-tracker/Profile";
 import Navbar from "./components/Layout/Navbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { ThemeActions } from "./redux-store/ThemeSlice";
 
 const App = () => {
-  const token = useSelector(state => state.auth.token);
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const darkMode = useSelector((state) => state.theme.darkMode);
+  const activatePremium = useSelector((state) => state.theme.activatePremium);
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  const themeHandler = () => {
+    dispatch(ThemeActions.changeTheme());
+  };
+
+  useEffect(() => {
+    document.body.style.backgroundColor = darkMode ? "#292c35" : "#fff";
+  }, [darkMode]);
 
   // useEffect(() => {
   //   let id = null;
@@ -31,17 +43,21 @@ const App = () => {
   return (
     <>
       <Navbar />
+      <div className="d-flex justify-content-end">
+        {isLoggedIn && activatePremium && (
+          <button onClick={themeHandler} className={`btn ${darkMode ? "btn-light" : "btn-dark"} me-2`}>
+            {darkMode ? "Light mode" : "Dark mode"}
+          </button>
+        )}
+      </div>
       <Switch>
         {!isLoggedIn && <Route exact path="/" component={SignUp} />}
         {!isLoggedIn && <Route exact path="/login" component={LogIn} />}
         {isLoggedIn && <Route exact path="/home" component={Home} />}
-        {isLoggedIn && (
-          <Route exact path="/profile" component={Profile} />
-        )}
+        {isLoggedIn && <Route exact path="/profile" component={Profile} />}
         {!isLoggedIn && (
           <Route exact path="/forgetpassword" component={ForgetPassword} />
         )}
-        <Redirect to="/login" />
       </Switch>
     </>
   );
