@@ -1,0 +1,11 @@
+.home {
+    background-color: black;
+    color: white;
+    width: 20rem;
+    padding-left: 12px;
+    border-radius: 15px;
+}
+
+.header {
+   color: white;
+}

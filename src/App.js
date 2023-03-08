@@ -1,4 +1,4 @@
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import ForgetPassword from "./components/Auth/ForgetPassword";
 import LogIn from "./components/Auth/LogIn";
 import SignUp from "./components/Auth/SignUp";
@@ -24,21 +24,21 @@ const App = () => {
     document.body.style.backgroundColor = darkMode ? "#292c35" : "#fff";
   }, [darkMode]);
 
-  // useEffect(() => {
-  //   let id = null;
-  //   console.log("useEfeect")
-  //   if (token) {
-  //     id = setTimeout(() => {
-  //       console.log("timeout")
-  //       localStorage.removeItem("token");
-  //       localStorage.removeItem("email");
-  //     }, 60000 * 10);
-  //   }
-  //   return () => {
-  //       clearTimeout(id)
-  //       console.log("cleanup")
-  //   };
-  // }, [token]);
+  useEffect(() => {
+    let id = null;
+    console.log("useEfeect")
+    if (token) {
+      id = setTimeout(() => {
+        console.log("timeout")
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
+      }, 60000 * 10);
+    }
+    return () => {
+        clearTimeout(id)
+        console.log("cleanup")
+    };
+  }, [token]);
 
   return (
     <>
@@ -51,7 +51,7 @@ const App = () => {
         )}
       </div>
       <Switch>
-        {!isLoggedIn && <Route exact path="/" component={SignUp} />}
+        {!isLoggedIn && <Route exact path="/signup" component={SignUp} />}
         {!isLoggedIn && <Route exact path="/login" component={LogIn} />}
         {isLoggedIn && <Route exact path="/home" component={Home} />}
         {isLoggedIn && <Route exact path="/profile" component={Profile} />}

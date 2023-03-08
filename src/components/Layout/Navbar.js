@@ -42,7 +42,7 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
       <div className="container-fluid">
-        <NavLink className="navbar-brand" to="">
+        <NavLink className="navbar-brand" to="home">
           EXPENSE TRACKER
         </NavLink>
         <button
@@ -81,7 +81,7 @@ const Navbar = () => {
             )}
             {!isLoggedIn && (
               <li className="nav-item">
-                <NavLink className="nav-link" to="/">
+                <NavLink className="nav-link" to="/signup">
                   SIGN UP
                 </NavLink>
               </li>

@@ -99,9 +99,10 @@ const Home = () => {
   };
 
   const editExpense = (expense) => {
-    document.getElementById("amount").value = expense.amount;
-    document.getElementById("des").value = expense.description;
-    document.getElementById("cat").value = expense.catagory;
+    amountRef.current.value = expense.amount;
+    descriptionRef.current.value = expense.description;
+    catagoryRef.current.value = expense.catagory;
+    
     existingId = expense.id;
 
     const filteredList = expenses.filter((prevItem) => {
@@ -133,7 +134,6 @@ const Home = () => {
                   <div className="mb-3">
                     <label className="form-label">Amount</label>
                     <input
-                      id="amount"
                       ref={amountRef}
                       className="form-control"
                       type="number"
@@ -142,7 +142,6 @@ const Home = () => {
                   <div className="mb-3">
                     <label className="form-label">Description</label>
                     <input
-                      id="des"
                       ref={descriptionRef}
                       className="form-control"
                       type="text"
@@ -150,7 +149,7 @@ const Home = () => {
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Choose a catagory:</label>
-                    <select id="cat" ref={catagoryRef} className="form-select">
+                    <select ref={catagoryRef} className="form-select">
                       <option value="Food">Food</option>
                       <option value="Petrol">Petrol</option>
                       <option value="Travel">Travel</option>

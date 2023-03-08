@@ -5,6 +5,8 @@ import { useEffect } from "react";
 
 const Expenses = (props) => {
   const activatePremium = useSelector(state => state.theme.activatePremium);
+  const darkMode = useSelector(state => state.theme.darkMode);
+
   const dispatch = useDispatch();
 
   const activatePremiumHandler = () => {
@@ -19,8 +21,11 @@ const Expenses = (props) => {
   useEffect(() => {
     if(totalAmount < 10000){ 
      dispatch(ThemeActions.actPremium(false));
+     if(darkMode){
+      dispatch(ThemeActions.changeTheme());
+     }
     }
-  },[totalAmount])
+  },[totalAmount, darkMode, dispatch])
 
   const blob = new Blob([JSON.stringify(props.expenses)])
 

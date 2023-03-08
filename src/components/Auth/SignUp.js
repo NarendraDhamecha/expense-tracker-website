@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const SignUp = () => {
   const emailRef = useRef('');
@@ -101,7 +101,7 @@ const SignUp = () => {
           <div className="card mt-3">
             <div className="card-body">
               <div className="card-text">
-                Have an account? <NavLink to="/login">Log In</NavLink>
+                Have an account? <Link to="/login">Log In</Link>
               </div>
             </div>
           </div>

@@ -97,7 +97,7 @@ const LogIn = () => {
           <div className="card mt-3">
             <div className="card-body">
               <div className="card-text">
-                Don't have an account? <NavLink to="/">Sign Up</NavLink>
+                Don't have an account? <NavLink to="/signup">Sign Up</NavLink>
               </div>
             </div>
           </div>
