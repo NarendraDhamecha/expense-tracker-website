@@ -1,10 +1,15 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useEffect, useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
+import { ThemeActions } from "../../redux-store/ThemeSlice";
 
 const Profile = () => {
-  const token = useSelector(state => state.auth.token);
-  const [name, setName] = useState("");
-  const [url, setUrl] = useState("");
+  const token = useSelector((state) => state.auth.token);
+  const nameRef = useRef("");
+  const urlRef = useRef("");
+  const history = useHistory();
+  const isLoading = useSelector((state) => state.theme.isLoading);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch(
@@ -21,26 +26,25 @@ const Profile = () => {
     )
       .then((res) => res.json())
       .then((data) => {
-        setName(data.users[0].displayName);
-        setUrl(data.users[0].photoUrl);
+        if(data.users[0].displayName && data.users[0].photoUrl){
+        nameRef.current.value = data.users[0].displayName;
+        urlRef.current.value = data.users[0].photoUrl;
+        }
       });
   }, [token]);
 
-  const fullNameHandler = (e) => {
-    setName(e.target.value);
-  };
-
-  const imageUrlHandler = (e) => {
-    setUrl(e.target.value);
-  };
-
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+
+    const name = nameRef.current.value;
+    const url = urlRef.current.value;
 
     if (name.length === 0 || url.length === 0) {
       alert("please fill all fields");
       return;
     }
+
+    dispatch(ThemeActions.setIsLoading(true));
 
     try {
       const res = await fetch(
@@ -59,9 +63,12 @@ const Profile = () => {
         }
       );
 
+      dispatch(ThemeActions.setIsLoading(false));
+
       const data = await res.json();
 
       if (res.ok) {
+        alert("Your profile has been successfully updated");
       } else {
         throw new Error(data.error.message);
       }
@@ -74,32 +81,25 @@ const Profile = () => {
     <div className="container-fluid text-center">
       <div className="row">
         <div className="col-md-5 col-10 mx-auto">
-          <div className="card">
+          <div className="card bg-dark text-white">
+            <h5 className="card-header bg-secondary">Contact Details</h5>
             <div className="card-body">
-              <h5 className="card-title mb-4">Contact Details</h5>
               <form onSubmit={onSubmitHandler}>
                 <div className="mb-3">
                   <label className="form-label">Full Name</label>
-                  <input
-                    onChange={fullNameHandler}
-                    value={name}
-                    type="text"
-                    className="form-control"
-                  />
+                  <input ref={nameRef} type="text" className="form-control" />
                 </div>
                 <div className="mb-4">
                   <label className="form-label">Profile Photo URL</label>
-                  <input
-                    onChange={imageUrlHandler}
-                    value={url}
-                    type="url"
-                    className="form-control"
-                  />
+                  <input ref={urlRef} type="url" className="form-control" />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                  Update
+                  {!isLoading ? "Update" : "Updating profile..."}
                 </button>
-                <button type="submit" className="btn btn-danger ms-4">
+                <button
+                  className="btn btn-danger ms-4"
+                  onClick={() => history.push("/greeting")}
+                >
                   Cancel
                 </button>
               </form>

@@ -5,6 +5,7 @@ import SignUp from "./components/Auth/SignUp";
 import Home from "./components/expense-tracker/Home";
 import Profile from "./components/expense-tracker/Profile";
 import Navbar from "./components/Layout/Navbar";
+import Greeting from "./components/expense-tracker/Greeting";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { ThemeActions } from "./redux-store/ThemeSlice";
@@ -22,21 +23,24 @@ const App = () => {
 
   useEffect(() => {
     document.body.style.backgroundColor = darkMode ? "#292c35" : "#fff";
-  }, [darkMode]);
+    if (!isLoggedIn && darkMode) {
+      dispatch(ThemeActions.changeTheme());
+    }
+  }, [darkMode, isLoggedIn, dispatch]);
 
   useEffect(() => {
     let id = null;
-    console.log("useEfeect")
+    console.log("useEfeect");
     if (token) {
       id = setTimeout(() => {
-        console.log("timeout")
+        console.log("timeout");
         localStorage.removeItem("token");
         localStorage.removeItem("email");
       }, 60000 * 10);
     }
     return () => {
-        clearTimeout(id)
-        console.log("cleanup")
+      clearTimeout(id);
+      console.log("cleanup");
     };
   }, [token]);
 
@@ -45,7 +49,10 @@ const App = () => {
       <Navbar />
       <div className="d-flex justify-content-end">
         {isLoggedIn && activatePremium && (
-          <button onClick={themeHandler} className={`btn ${darkMode ? "btn-light" : "btn-dark"} me-2`}>
+          <button
+            onClick={themeHandler}
+            className={`btn ${darkMode ? "btn-light" : "btn-dark"} me-2`}
+          >
             {darkMode ? "Light mode" : "Dark mode"}
           </button>
         )}
@@ -53,11 +60,12 @@ const App = () => {
       <Switch>
         {!isLoggedIn && <Route exact path="/signup" component={SignUp} />}
         {!isLoggedIn && <Route exact path="/login" component={LogIn} />}
-        {isLoggedIn && <Route exact path="/home" component={Home} />}
-        {isLoggedIn && <Route exact path="/profile" component={Profile} />}
         {!isLoggedIn && (
           <Route exact path="/forgetpassword" component={ForgetPassword} />
         )}
+        {isLoggedIn && <Route exact path="/greeting" component={Greeting} />}
+        {isLoggedIn && <Route exact path="/home" component={Home} />}
+        {isLoggedIn && <Route exact path="/profile" component={Profile} />}
       </Switch>
     </>
   );

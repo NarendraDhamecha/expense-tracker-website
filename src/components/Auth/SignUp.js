@@ -1,10 +1,15 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
+import { ThemeActions } from "../../redux-store/ThemeSlice";
 
 const SignUp = () => {
-  const emailRef = useRef('');
-  const passwordRef = useRef('');
-  const confirmPasswordRef = useRef('');
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const confirmPasswordRef = useRef("");
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.theme.isLoading);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -34,6 +39,8 @@ const SignUp = () => {
       return;
     }
 
+    dispatch(ThemeActions.setIsLoading(true));
+
     try {
       const res = await fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBMCRv6A2RlE36nAMBYrfJ-3aBiPdMCfZE",
@@ -50,10 +57,13 @@ const SignUp = () => {
         }
       );
 
+      dispatch(ThemeActions.setIsLoading(false));
+
       const data = await res.json();
 
       if (res.ok) {
-        console.log("User has successfully signed up.");
+        alert("User has successfully signed up.");
+        history.push("/login");
       } else {
         throw new Error(data.error.message);
       }
@@ -65,40 +75,42 @@ const SignUp = () => {
   return (
     <div className="container-fluid text-center">
       <div className="row">
-        <div className="col-md-5 col-10 mx-auto">
-          <div className="card">
+        <div className="col-md-4 col-10 mx-auto">
+          <div className="card bg-dark text-white">
+            <h3 className="card-header bg-secondary">SIGN UP</h3>
             <div className="card-body">
-              <div className="card-title mb-5">
-                <h3>SIGN UP</h3>
-              </div>
               <form onSubmit={onSubmitHandler}>
                 <div className="mb-2">
-                  <label className="form-label">Email address</label>
-                  <input ref={emailRef} className="form-control" type="email" />
+                  <input
+                    ref={emailRef}
+                    className="form-control"
+                    type="email"
+                    placeholder="Email"
+                  />
                 </div>
                 <div className="mb-2">
-                  <label className="form-label">Password</label>
                   <input
                     ref={passwordRef}
                     className="form-control"
                     type="password"
+                    placeholder="Password"
                   />
                 </div>
                 <div className="mb-3">
-                  <label className="form-label">Confirm password</label>
                   <input
                     className="form-control"
                     type="password"
                     ref={confirmPasswordRef}
+                    placeholder="Confirm Password"
                   />
                 </div>
                 <button className="btn btn-primary" type="submit">
-                  Sign Up
+                  {!isLoading ? "Sign Up" : "Please wait..."}
                 </button>
               </form>
             </div>
           </div>
-          <div className="card mt-3">
+          <div className="card mt-3 bg-dark text-white">
             <div className="card-body">
               <div className="card-text">
                 Have an account? <Link to="/login">Log In</Link>

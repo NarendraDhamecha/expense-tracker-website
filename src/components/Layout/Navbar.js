@@ -3,36 +3,9 @@ import { AuthActions } from "../../redux-store/AuthSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
-  const token = useSelector((state) => state.auth.token);
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const verifyEmailHandler = async () => {
-    try {
-      const res = await fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyBMCRv6A2RlE36nAMBYrfJ-3aBiPdMCfZE",
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-          body: JSON.stringify({
-            requestType: "VERIFY_EMAIL",
-            idToken: token,
-          }),
-        }
-      );
-      const data = await res.json();
-
-      if (res.ok) {
-      } else {
-        throw new Error(data.error.message);
-      }
-    } catch (e) {
-      alert(e);
-    }
-  };
 
   const onLogOut = () => {
     dispatch(AuthActions.logout());
@@ -60,8 +33,15 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             {isLoggedIn && (
               <li className="nav-item">
-                <NavLink className="nav-link" to="/home">
+                <NavLink className="nav-link" to="/greeting">
                   HOME
+                </NavLink>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/home">
+                  EXPENSES
                 </NavLink>
               </li>
             )}
@@ -90,19 +70,9 @@ const Navbar = () => {
               <li className="nav-item">
                 <button
                   onClick={onLogOut}
-                  className="btn btn-primary btn-sm mt-1 ms-2"
+                  className="btn btn-danger btn-sm mt-1 ms-2"
                 >
                   Log Out
-                </button>
-              </li>
-            )}
-            {isLoggedIn && (
-              <li className="nav-item">
-                <button
-                  onClick={verifyEmailHandler}
-                  className="btn btn-secondary btn-sm mt-1 ms-2"
-                >
-                  verify email
                 </button>
               </li>
             )}
