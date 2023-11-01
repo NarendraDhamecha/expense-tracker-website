@@ -50,7 +50,7 @@ const Greeting = () => {
       <div className="d-flex flex-column align-items-center my-4">
         <span className="home">
           Your profile is incomplete.
-          <NavLink Link to="/profile">
+          <NavLink to="/profile">
             Complete now
           </NavLink>
         </span>

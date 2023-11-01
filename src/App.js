@@ -58,11 +58,13 @@ const App = () => {
         )}
       </div>
       <Switch>
+        {!isLoggedIn && <Route exact path="/" component={LogIn} />}
         {!isLoggedIn && <Route exact path="/signup" component={SignUp} />}
         {!isLoggedIn && <Route exact path="/login" component={LogIn} />}
         {!isLoggedIn && (
           <Route exact path="/forgetpassword" component={ForgetPassword} />
         )}
+        {isLoggedIn && <Route exact path="/" component={Greeting} />}
         {isLoggedIn && <Route exact path="/greeting" component={Greeting} />}
         {isLoggedIn && <Route exact path="/home" component={Home} />}
         {isLoggedIn && <Route exact path="/profile" component={Profile} />}

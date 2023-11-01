@@ -27,11 +27,15 @@ const SignUp = () => {
       return;
     }
 
-    for (let i = 0; i < password.length; i++) {
-      if (password[i] !== confirmPassword[i]) {
-        alert("password and confirm password does not match");
-        return;
-      }
+    // for (let i = 0; i < password.length; i++) {
+    //   if (password[i] !== confirmPassword[i]) {
+    //     alert("password and confirm password does not match");
+    //     return;
+    //   }
+    // }
+    if(password !== confirmPassword){
+      alert('password and confirm password does not match');
+      return;
     }
 
     if (password.length < 6) {

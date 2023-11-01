@@ -66,7 +66,7 @@ const Expenses = (props) => {
         {props.expenses.length === 0 && <h3>No expenses added</h3>}
       </ul>
       <div className="footer">
-        {!activatePremium && totalAmount >= 10000 && (
+        {totalAmount >= 10000 && (
           <button
             onClick={activatePremiumHandler}
             className="btn btn-secondary btn-sm"
